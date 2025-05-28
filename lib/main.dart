@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes_app/addnote.dart';
 import 'package:notes_app/home.dart';
 import 'package:notes_app/sqldb.dart';
 
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       home: HomePage(),
+      routes:{"addnotes":(context)=> Addnote()} ,
     );
   }
 }

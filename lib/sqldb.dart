@@ -4,13 +4,12 @@ import 'package:path/path.dart';
 class Sqldb {
   static Database? _db;
 
- Future<Database> get db async {
-  if (_db == null) {
-    _db = await initialDb();
+  Future<Database> get db async {
+    if (_db == null) {
+      _db = await initialDb();
+    }
+    return _db!;
   }
-  return _db!;
-}
-
 
   initialDb() async {
     String databasepath = await getDatabasesPath();
@@ -18,54 +17,60 @@ class Sqldb {
     Database database = await openDatabase(
       path,
       onCreate: _onCreate,
-      version: 1,
+      version: 2,
       onUpgrade: _onUpgrade,
     );
-    return database ;
-  print(" on upgrade======") ;
-    
+    return database;
   }
-  _onUpgrade(Database db, int oldVer, int newVer) {
-    
-    }
 
-  _onCreate(Database db, int version) async {
-    await db.execute('''
-  CREATE TABLE "notes" ( 
-  "id" INTEGER NOT NULL PRIMARY KEY  AUTOINCREMENT ,
-  "note" TEXT NOT NULL)
-
-''');
-  print(" on create======") ;
+  _onUpgrade(Database db, int oldVer, int newVer) async {
+    print(" on upgrade======");
+    await db.execute("ALTER TABLE notes ADD COLUMN color TEXT");
   }
+
+_onCreate(Database db, int version) async {
+  Batch batch =db.batch();
+   batch.execute('''
+    CREATE TABLE notes (
+      id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+      note TEXT NOT NULL,
+      title TEXT,
+      color TEXT
+    )
+  ''');
+  await batch.commit();
+  print("on create======");
+}
 
   readData(String sql) async {
     Database? mydb = await db;
     List<Map> response = await mydb!.rawQuery(sql);
-    return response ;
+    return response;
   }
 
   insertData(String sql) async {
     Database? mydb = await db;
     int response = await mydb!.rawInsert(sql);
-     return response ;
+    return response;
   }
 
   updateData(String sql) async {
     Database? mydb = await db;
     int response = await mydb!.rawUpdate(sql);
-     return response ;
+    return response;
   }
 
   deleteData(String sql) async {
     Database? mydb = await db;
     int response = await mydb!.rawDelete(sql);
-     return response ;
+    return response;
   }
-}
-MydeletDatabase()async{
-   String databasepath = await getDatabasesPath();
-    String path = join(databasepath, "mohamad.db");
+  MydeletDatabase() async {
+  String databasepath = await getDatabasesPath();
+  String path = join(databasepath, "mohamad.db");
 
   return deleteDatabase(path);
 }
+
+}
+

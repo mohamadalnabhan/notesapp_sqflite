@@ -10,38 +10,70 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List notes = [];
   Sqldb sqldb = Sqldb();
   Future<List<Map>> readData() async {
+
     List<Map> response = await sqldb.readData("SELECT * FROM notes ");
+           notes.addAll(response);
+    if(this.mounted){
+   setState(() {
+     
+   });
+    }
+
     return response;
+  }
+ @override
+void initState() {
+  readData() ;
+    super.initState();
+    
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed("addnotes");
+        },
+        child: Icon(Icons.add),
+      ),
       appBar: AppBar(title: const Text('Simple Homepage'), centerTitle: true),
       body: Container(
+        padding: EdgeInsets.all(7),
         child: ListView(
           children: [
-            FutureBuilder(
-              future: readData(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
+             ListView.builder(
+                    itemCount: notes.length,
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return Card(
                         child: ListTile(
-                          title: Text("${snapshot.data[index]['note']}"),
+                          title: Text("${ notes[index]['title']}"),
+                          subtitle: Text("${ notes[index]['note']}"),
+                          trailing:IconButton(onPressed: ()async{
+                             int response = await sqldb.deleteData("DELETE  FROM notes WHERE id = ${ notes[index]['id']}");
+                              if(response > 0 ){
+                                notes.removeWhere((element)=>element['id'] ==  notes[index]['id']);
+                                setState(() {
+                                  
+                                });
+                              }
+                          }, icon:Icon(Icons.delete),color: Colors.red,)
                         ),
                       );
                     },
-                  );
-                }
-                return Center(child: CircularProgressIndicator());
+                  ),
+            MaterialButton(
+              onPressed: () {
+                sqldb.MydeletDatabase();
               },
+              color: Colors.blue,
+              textColor: Colors.white,
+              child: Text("delete data"),
             ),
           ],
         ),
