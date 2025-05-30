@@ -33,7 +33,7 @@ class _EditnoteState extends State<Editnote> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("add notes")),
+      appBar: AppBar(title: Text("edit notes")),
       body: Container(
         padding: EdgeInsets.all(20),
         child: ListView(
@@ -77,7 +77,7 @@ class _EditnoteState extends State<Editnote> {
                         print("Error: $e");
                       }
                     },
-                    child: Text("Add Note"),
+                    child: Text("edit Note"),
                   ),
                 ],
               ),

@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
         },
         child: Icon(Icons.add),
       ),
-      appBar: AppBar(title: const Text('Simple Homepage'), centerTitle: true),
+      appBar: AppBar(title: const Text('Homepage'), centerTitle: true),
       body: Container(
         padding: EdgeInsets.all(7),
         child: ListView(
@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> {
               },
               color: Colors.blue,
               textColor: Colors.white,
-              child: Text("delete data"),
+              child: Text("delete database"),
             ),
           ],
         ),
